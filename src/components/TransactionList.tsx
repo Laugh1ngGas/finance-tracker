@@ -21,6 +21,9 @@ export default function TransactionList({ transactions, onDelete }: any) {
             >
               {t.type === "income" ? "+" : "-"}${t.amount}
             </span>
+            <p className="text-sm text-gray-500">
+              {t.type} • {t.category}
+            </p>
 
             <button
               onClick={() => onDelete(t.id)}

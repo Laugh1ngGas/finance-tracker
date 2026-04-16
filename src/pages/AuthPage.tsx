@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
 import { useNavigate } from "react-router-dom";
+import { getUserCountry } from "../services/geo";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -39,10 +40,28 @@ export default function AuthPage() {
       const user = data.user;
 
       if (user) {
+        let country = "Unknown";
+
+        try {
+          const cachedCountry = localStorage.getItem("country");
+
+          if (cachedCountry) {
+            country = cachedCountry;
+          } else {
+            country = await getUserCountry();
+
+            localStorage.setItem("country", country);
+          }
+        } catch (err) {
+          console.warn("Geo detection failed", err);
+        }
+
         const { error: insertError } = await supabase.from("users").insert({
           id: user.id,
           name,
           email,
+          country,
+          tax_system: "default",
         });
 
         if (insertError) {

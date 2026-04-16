@@ -18,3 +18,22 @@ export const deleteTransaction = async (id: string) => {
 export const updateTransaction = async (id: string, data: any) => {
   return await supabase.from("transactions").update(data).eq("id", id);
 };
+
+export const getTransactionsByDate = async (
+  from: string,
+  to: string
+) => {
+  return await supabase
+    .from("transactions")
+    .select("*")
+    .gte("created_at", from)
+    .lte("created_at", to)
+    .order("created_at", { ascending: false });
+};
+
+export const getTransactionsByCategory = async (category: string) => {
+  return await supabase
+    .from("transactions")
+    .select("*")
+    .eq("category", category);
+};
